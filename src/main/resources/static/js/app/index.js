@@ -1,8 +1,8 @@
 var main = {
     init: function () {
         var _this = this;
-        $('#btn-save').on('click', function () {
-            _this.save();
+        $('#btn-convert').on('click', function () {
+            _this.convert();
         })
     },
 
@@ -10,15 +10,18 @@ var main = {
         var data = {
             rawUrl: $('#rawUrl').val(),
         }
+        console.log(data);
         $.ajax({
             type: 'POST',
             url: '/api/url/short',
-            dataType: 'json',
+            // dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(() => {
-            alert('글이 등록되었습니다.');
-            window.location.href = "/";
+        }).done((response) => {
+            console.log(response);
+            const template = "{{shorten}}"
+            const rendered = Mustache.render(template, {shorten: response.toString()})
+            document.getElementById('target').innerHTML = rendered
         }).fail((error) => {
             alert(JSON.stringify(error));
         });
