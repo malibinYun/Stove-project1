@@ -9,7 +9,6 @@ public class IndexController {
 
     @RequestMapping("/")
     public String test(Model model) {
-        model.addAttribute("variable", "이얏호");
         model.addAttribute("shorten", "");
         return "index";
     }
