@@ -4,28 +4,84 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <title>Url Shortener</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/app/bgimg.css">
 
     <style>
+        @import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
         .hide {
             display: none;
         }
+
+        body {
+            background: #f2f2f2;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .search {
+            width: 100%;
+            position: relative;
+            display: flex;
+        }
+
+        .searchTerm {
+            width: 100%;
+            border: 3px solid #00B4CC;
+            border-right: none;
+            padding: 5px;
+            height: 20px;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+            color: #9DBFAF;
+        }
+
+        .searchTerm:focus {
+            color: #00B4CC;
+        }
+
+        .searchButton {
+            width: 80px;
+            height: 36px;
+            border: 1px solid #00B4CC;
+            background: #00B4CC;
+            text-align: center;
+            color: #fff;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .wrap {
+            width: 30%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
     </style>
 </head>
 <body>
-<h1>몬가 띄워보자</h1>
-<label for="rawUrl">주소</label>
-<input type="text" id="rawUrl" placeholder="주소를 입력하세요">
-<button type="button" id="btn-convert">변환</button>
-<div id="target">target</div>
-<div id="shortenUrl" type="x-tmpl-mustache" class="hide">
-    {{shorten}}
+
+
+<div class="wrap">
+    <h1>URL Shortener</h1>
+    <div class="search">
+        <input type="text" class="searchTerm" placeholder="축소할 주소를 입력해 주세요!">
+        <button type="submit" class="searchButton" id="btn-convert">
+            변환
+        </button>
+    </div>
+    <div id="target"></div>
+    <div id="shortenUrl" type="x-tmpl-mustache" class="hide">
+        {{shorten}}
+    </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/3.0.1/mustache.min.js"></script>
 
 <script src="/js/app/index.js"></script>
 <script src="https://unpkg.com/mustache@latest"></script>
