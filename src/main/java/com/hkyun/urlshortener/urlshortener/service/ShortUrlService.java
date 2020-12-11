@@ -7,23 +7,35 @@ import com.hkyun.urlshortener.urlshortener.domain.repository.ShortUrlRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Service
 public class ShortUrlService {
 
     private final ShortUrlRepository shortUrlRepository;
 
-    public String convertShortUrl(ShortUrlRequestDto requestDto) {
+    public String getShortUrl(ShortUrlRequestDto requestDto) {
         String rawUrl = requestDto.getRawUrl().trim();
         String shortenUrl = UrlShortener.convert(rawUrl);
 
-        ShortUrl alreadyExist = shortUrlRepository.findByOriginalUrl(rawUrl);
-        if (alreadyExist != null) {
-            return alreadyExist.getValue();
+        Optional<ShortUrl> alreadyExist = shortUrlRepository.findByOriginalUrl(rawUrl);
+        if (alreadyExist.isPresent()) {
+            return alreadyExist.get().getValue();
         }
+        saveShortUrl(shortenUrl, rawUrl);
+        return shortenUrl;
+    }
+
+    private void saveShortUrl(String shortenUrl, String rawUrl) {
         ShortUrl entity = new ShortUrl(shortenUrl, rawUrl);
         shortUrlRepository.save(entity);
+    }
 
-        return shortenUrl;
+    public String getOriginalUrl(String shortenKey) {
+        String shortenUrl = UrlShortener.BASE_URL + shortenKey;
+        return shortUrlRepository.findByValue(shortenUrl)
+                .orElseThrow(IllegalArgumentException::new)
+                .getOriginalUrl();
     }
 }

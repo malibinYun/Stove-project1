@@ -1,6 +1,5 @@
 package com.hkyun.urlshortener.urlshortener.domain.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
