@@ -1,8 +1,5 @@
 package com.hkyun.urlshortener.urlshortener.domain;
 
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-
 public class UrlShortener {
     private static final int BASE62 = 62;
     private static final String BASE62_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -14,10 +11,12 @@ public class UrlShortener {
 
     public static String convert(final String rawUrl) {
         String originalUrl = validateUrl(rawUrl);
+        System.out.println(rawUrl);
         long decimal = convertDecimal(originalUrl);
+        System.out.println(decimal);
         StringBuilder stringBuilder = new StringBuilder(BASE_URL);
         while (decimal > 0) {
-            int rem = (int) decimal % BASE62;
+            int rem = (int) (decimal % BASE62);
             stringBuilder.append(BASE62_CHARS.charAt(rem));
             decimal /= BASE62;
         }
@@ -32,7 +31,10 @@ public class UrlShortener {
     }
 
     private static long convertDecimal(String string) {
-        BigInteger bigInteger = new BigInteger(string.getBytes(StandardCharsets.UTF_8));
-        return bigInteger.longValue();
+        long sum = 0;
+        for (int i = 1; i <= string.length(); i++) {
+            sum += i * (long) string.charAt(i - 1);
+        }
+        return sum;
     }
 }

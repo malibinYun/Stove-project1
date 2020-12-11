@@ -10,6 +10,7 @@ public class ExceptionController {
 
     @ExceptionHandler(Exception.class)
     public ExceptionMessageDto unknownError(Exception e) {
+        e.printStackTrace();
         return new ExceptionMessageDto("internal server error");
     }
 
