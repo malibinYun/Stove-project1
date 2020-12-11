@@ -23,8 +23,12 @@ public class ShortUrl {
     @Column(nullable = false)
     private String originalUrl;
 
+    @Column(nullable = false)
+    private Long requestCount;
+
     public ShortUrl(String rawUrl, String originalUrl) {
         this.value = rawUrl;
         this.originalUrl = originalUrl;
+        this.requestCount = 1L;
     }
 }
