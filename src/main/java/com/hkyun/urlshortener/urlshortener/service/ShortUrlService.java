@@ -1,12 +1,13 @@
 package com.hkyun.urlshortener.urlshortener.service;
 
 import com.hkyun.urlshortener.urlshortener.controller.dto.ShortUrlRequestDto;
-import com.hkyun.urlshortener.urlshortener.domain.UrlShortener;
+import com.hkyun.urlshortener.urlshortener.domain.Url;
 import com.hkyun.urlshortener.urlshortener.domain.entity.ShortUrl;
 import com.hkyun.urlshortener.urlshortener.domain.repository.ShortUrlRepository;
 import com.hkyun.urlshortener.urlshortener.exception.ShortenUrlNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -16,15 +17,19 @@ public class ShortUrlService {
 
     private final ShortUrlRepository shortUrlRepository;
 
+    @Transactional
     public String getShortUrl(ShortUrlRequestDto requestDto) {
-        String rawUrl = requestDto.getRawUrl().trim();
-        String shortenUrl = UrlShortener.convert(rawUrl);
+        String originalUrl = Url.appendHttp(requestDto.getRawUrl().trim());
+        String shortenUrl = Url.ofShorten(originalUrl);
 
-        Optional<ShortUrl> alreadyExist = shortUrlRepository.findByOriginalUrl(rawUrl);
+        Optional<ShortUrl> alreadyExist = shortUrlRepository.findByOriginalUrl(originalUrl);
         if (alreadyExist.isPresent()) {
-            return alreadyExist.get().getValue();
+            ShortUrl existUrl = alreadyExist.get();
+            existUrl.countUp();
+            shortUrlRepository.save(existUrl);
+            return existUrl.getValue();
         }
-        saveShortUrl(shortenUrl, rawUrl);
+        saveShortUrl(shortenUrl, originalUrl);
         return shortenUrl;
     }
 
@@ -34,7 +39,7 @@ public class ShortUrlService {
     }
 
     public String getOriginalUrl(String shortenKey) {
-        String shortenUrl = UrlShortener.BASE_URL + shortenKey;
+        String shortenUrl = Url.BASE_URL + shortenKey;
         return shortUrlRepository.findByValue(shortenUrl)
                 .orElseThrow(() -> new ShortenUrlNotFoundException(String.format("Cannot redirect this Url : %s", shortenUrl)))
                 .getOriginalUrl();

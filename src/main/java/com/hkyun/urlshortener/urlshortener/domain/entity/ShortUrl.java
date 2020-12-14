@@ -17,7 +17,7 @@ public class ShortUrl {
     @GeneratedValue()
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String value;
 
     @Column(nullable = false)
@@ -30,5 +30,9 @@ public class ShortUrl {
         this.value = rawUrl;
         this.originalUrl = originalUrl;
         this.requestCount = 1L;
+    }
+
+    public void countUp() {
+        requestCount++;
     }
 }
